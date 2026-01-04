@@ -6,3 +6,14 @@ data/**
 !data/README.md 
 results/** 
 !results/.gitkeep 
+*.h5ad 
+*.rds 
+*.loom 
+*.h5Seurat 
+*.mtx 
+*.fastq 
+*.fastq.gz 
+*.bam 
+*.bai 
+*.h5 
+*.gz 
