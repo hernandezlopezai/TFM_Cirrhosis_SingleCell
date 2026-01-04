@@ -1,0 +1,8 @@
+# Ignorar outputs/datos pesados 
+__pycache__/ 
+*.pyc 
+.ipynb_checkpoints/ 
+data/** 
+!data/README.md 
+results/** 
+!results/.gitkeep 
