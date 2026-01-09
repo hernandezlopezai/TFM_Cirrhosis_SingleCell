@@ -1,1 +1,6 @@
-.
+Código (repositorio): https://github.com/hernandezlopezai/TFM_Cirrhosis_SingleCell
+
+Release (versión de entrega): v1.0-tfm
+Commit: 6d39f46
+Asset ZIP (release): Source code (zip) incluido en la release v1.0-tfm
+Instrucciones de ejecución: ver README.md
