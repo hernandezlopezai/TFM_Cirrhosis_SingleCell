@@ -1,0 +1,44 @@
+raw_h5ad_filename: "TFM_CIRRHOSIS_merged.h5ad"
+backed_mode: "r"
+
+after_qc_h5ad_filename: "TFM_CIRRHOSIS_afterQC.h5ad"
+normalized_h5ad_filename: "TFM_CIRRHOSIS_normalized.h5ad"
+harmony_h5ad_filename: "TFM_CIRRHOSIS_harmony.h5ad"
+neighbors_umap_h5ad_filename: "TFM_CIRRHOSIS_harmony_neighbors_umap.h5ad"
+main_level1_h5ad_filename: "TFM_CIRRHOSIS_main_with_Level1.h5ad"
+
+qc_min_genes: 500
+qc_max_genes: 6000
+qc_min_counts: 1000
+qc_max_counts: 50000
+qc_max_pct_mt: 20.0
+
+norm_target_sum: 10000
+
+hvg_n_top_genes: 3000
+hvg_flavor: "seurat_v3"
+hvg_batch_key: "gem_id"
+
+pca_n_comps: 30
+pca_zero_center: false
+
+harmony_batch_key: "gem_id"
+harmony_emb_key: "X_pca_harmony"
+
+neighbors_key: "harmony"
+neighbors_n_neighbors: 15
+
+umap_key: "X_umap_harmony"
+umap_min_dist: 0.3
+umap_spread: 1.0
+umap_random_state: 0
+
+leiden_resolutions: "0.2,0.5,0.8"
+leiden_l1_resolution: 0.5
+leiden_l1_key: "leiden_L1"
+
+level1_key: "Level1"
+level1_map_json: "level1_map.json"
+level1_remove_labels: "Platelets"
+level1_rankgenes_key: "rank_genes_Level1"
+level1_rank_n_genes: 200
