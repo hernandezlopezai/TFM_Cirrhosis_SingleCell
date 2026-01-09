@@ -1,0 +1,10 @@
+name: tfm-cirrhosis
+channels:
+  - defaults
+dependencies:
+  - python=3.13.5
+  - leidenalg
+  - scanpy
+  - jupyterlab
+  - python-igraph
+prefix: C:\Users\Coni\miniconda3\envs\tfm-cirrhosis
