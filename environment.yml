@@ -1,10 +1,42 @@
 name: tfm-cirrhosis
 channels:
+  - conda-forge
+  - bioconda
   - defaults
 dependencies:
-  - python=3.13.5
-  - leidenalg
+  - python=3.12
   - scanpy
-  - jupyterlab
   - python-igraph
-prefix: C:\Users\Coni\miniconda3\envs\tfm-cirrhosis
+  - leidenalg
+  - jupyterlab
+  - harmonypy
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - statsmodels
+  - matplotlib
+  - seaborn
+  - anndata
+  - h5py
+  - umap-learn
+  - pynndescent
+  - pyyaml
+  - openpyxl
+  - xlsxwriter
+  - python-docx
+
+  # R para R/pathway_enrichment.R (opcional pero recomendable)
+  - r-base
+  - r-dplyr
+  - r-readr
+  - r-msigdbr
+  - r-fgsea
+  - r-ggplot2
+
+  - pip
+  - pip:
+      - sccoda==0.1.9
+      - tensorflow==2.20.0
+      - tensorflow-probability==0.25.0
+      - tf-keras==2.20.1
