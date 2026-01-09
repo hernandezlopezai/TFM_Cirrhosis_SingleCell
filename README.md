@@ -1,4 +1,4 @@
-# TFM_Cirrhosis_SingleCell — scRNA-seq pipeline (Healthy vs Cirrhosis)
+# Exploring Circulating Immune Profile Remodeling in Cirrhosis: Reproducible scRNA-seq Pipeline
 
 Repositorio del pipeline de análisis scRNA-seq para un cohorte inmune (PBMC) comparando Healthy vs Cirrhosis.
 
