@@ -1,61 +1,61 @@
 # Exploring Circulating Immune Profile Remodeling in Cirrhosis: Reproducible scRNA-seq Pipeline
 
-Repositorio del pipeline de análisis scRNA-seq para un cohorte inmune (PBMC) comparando Healthy vs Cirrhosis.
+Repository containing a reproducible scRNA-seq analysis pipeline for an immune (PBMC) cohort comparing Healthy vs Cirrhosis.
 
-Repositorio público: `github.com/hernandezlopezai/TFM_Cirrhosis_SingleCell`
-
----
-
-## Qué hace el pipeline (resumen)
-
-1) QC -> normalización -> HVG -> PCA  
-2) Integración / batch correction (Harmony)  
-3) Clustering global y anotación Level1 + split por linajes  
-4) Subclustering por linaje (Level2) en linajes con Level2 real
-5) Ensamblaje global (Level1 + Level2), tablas/figuras globales  
-6) Downstream final:
-   - Filtrado RBC-out (incluye exclusión robusta de `RBC_and_HSC` cuando aplica)
-   - Construcción de `Level1_refined` desde Level2 (T vs NK; Mono vs DC; hotfix DC3->DC)
-   - `Level2_final` (post-procesado mínimo): `Conv_T_other -> CD4_Memory` (sin convertir NaN->"nan")
-   - UMAP final (Harmony) por `patientID` por defecto
-   - QA (coherencia, mixing, dotplot numérico)
-   - Composición (counts/props) + scCODA (Level1_refined y Level2_final)
-   - DE pseudobulk + volcanos + tablas
-   - Pathway enrichment (GSEA / MSigDB Hallmark + Reactome) en R
-   - Annex: UMAPs por linaje + dotplots Level2_final (2 marcadores)
+Public repository: `github.com/hernandezlopezai/TFM_Cirrhosis_SingleCell`
 
 ---
 
-## Estructura del repo
+## Overview
+
+1) QC -> normalization -> HVG -> PCA  
+2) Integration / batch correction (Harmony)  
+3) Global clustering and Level1 annotation + lineage split  
+4) Lineage-specific subclustering (Level2) for lineages with true Level2 resolution  
+5) Global assembly (Level1 + Level2), summary tables/figures  
+6) Final downstream steps:
+   - RBC-out filtering (including robust exclusion of `RBC_and_HSC` when applicable)
+   - Construction of `Level1_refined` from Level2 (T vs NK; Mono vs DC; DC3->DC hotfix)
+   - `Level2_final` (minimal post-processing): `Conv_T_other -> CD4_Memory` (without converting NaN -> "nan")
+   - Final UMAP (Harmony), default batch = `patientID`
+   - QA (coherence, mixing, numeric dotplot matrix)
+   - Composition (counts/props) + scCODA (`Level1_refined` and `Level2_final`)
+   - Pseudobulk DE + volcano plots + tables
+   - Pathway enrichment (GSEA / MSigDB Hallmark + Reactome) in R
+   - Annex: lineage UMAPs + `Level2_final` dotplots (2 markers)
+
+---
+
+## Repository structure
 
 - `notebooks/`  
-  Notebooks del pipeline (01->20), ejecutables en orden.
+  Pipeline notebooks (01->20), runnable in order.
 
 - `src/`  
-  Código reutilizable del repo. Incluye `src/paths.py` (rutas) y `src/markers.py` (paneles + helpers).
+  Reusable repository code. Includes `src/paths.py` (paths) and `src/markers.py` (marker panels + helpers).
 
 - `config/`  
-  Configuración: `config/config.yaml` + mapas JSON (p.ej. `level2_map.json`).
+  Configuration: `config/config.yaml` + JSON maps (e.g. `level2_map.json`).
 
 - `R/`  
-  Scripts en R (p.ej. `pathway_enrichment.R` para GSEA).
+  R scripts (e.g. `pathway_enrichment.R` for GSEA).
 
 - `data/`  
-  Inputs (no se versionan datos grandes).
+  Inputs (large data are not versioned).
 
 - `results/`  
-  Artefactos/tablas generados por el pipeline.
+  Pipeline-generated artifacts/tables.
 
 - `figures/`  
-  Figuras generadas por el pipeline.
+  Pipeline-generated figures.
 
 ---
 
-## Convenciones del repo
+## Repository conventions
 
-Rutas:
-- Se resuelven SIEMPRE con `src/paths.py`.
-- Patrón típico en notebooks:
+Paths:
+- Always resolved via `src/paths.py`.
+- Typical pattern in notebooks:
   ```python
   from src.paths import project_paths
   from pathlib import Path
@@ -67,126 +67,126 @@ Rutas:
   ```
 
 Config:
-- Parámetros en `config/config.yaml` (YAML plano).
+- Parameters live in `config/config.yaml` (flat YAML).
 
 Outputs:
-- Tablas/artefactos: `results/`
-- Figuras: `figures/`
-- Linajes:
-  - `results/lineages/level1/`
-  - `results/lineages/level2/`
-  - `results/markers/level2/`
-  - `figures/level2/`
+- Tables/artifacts: `results/`
+- Figures: `figures/`
+- Lineages:
+- `results/lineages/level1/`
+- `results/lineages/level2/`
+- `results/markers/level2/`
+- `figures/level2/`
 
-Decisiones downstream fijadas:
-- `Level2_final` se usa downstream (no reemplaza Level2): mapping mínimo `Conv_T_other -> CD4_Memory`, almacenado como JSON en `results/summary_tables/...`.
-- NB13 hace Harmony “final” por defecto con batch=`patientID` (override opcional en config: `umap_final_harmony_batch_key`).
+Fixed downstream decisions:
+- `Level2_final` is used downstream (does not replace Level2): minimal mapping `Conv_T_other -> CD4_Memory`, stored as JSON under `results/summary_tables/...`.
+- NB13 computes the “final” Harmony by default using batch = `patientID` (optional override in config: `umap_final_harmony_batch_key`).
 
 ---
 
-## Instalación (Conda)
+## Installation (Conda)
 
-Si ya se dispone de `environment.yml`:
+If `environment.yml` is available:
 ```bash
 conda env create -f environment.yml
 conda activate tfm-cirrhosis
 ```
 
-Si se necesita generar desde el entorno actual (en la raíz del repositorio):
+If you need to generate it from the current environment (from the repository root):
 ```bash
 conda activate tfm-cirrhosis
 conda env export --from-history --no-builds > environment.yml
 ```
 
-Nota sobre reproducibilidad:
-- `--from-history` exporta lo “instalado explícitamente” por conda, pero puede no capturar paquetes instalados por `pip`.
-- Si se usa `pip install ...`, hayq ue añadir un bloque `pip:` en `environment.yml` o guardar un `requirements-pip.txt`.
+Reproducibility note:
+- `--from-history` exports packages explicitly installed via conda, but may not capture packages installed via `pip`.
+- If you used `pip install ...`, add a `pip:` block to `environment.yml` or save a `requirements-pip.txt`.
 
 ---
 
-## Requisitos
+## Requirements
 
 Python:
 - Scanpy stack: `scanpy`, `anndata`, `numpy`, `pandas`, `matplotlib`, etc.
 
-R (para GSEA):
+R (for GSEA):
 - `dplyr`, `readr`, `msigdbr`, `fgsea`, `ggplot2`
 
 ---
 
-## Datos
+## Data
 
-Este repositorio no incluye datos crudos ni objetos pesados. Coloca los inputs en `data/` según lo definido en `config/config.yaml`.
+This repository does not include raw data or large objects. Place the required inputs under `data/` as defined in `config/config.yaml`.
 
 ---
 
-## Ejecución del pipeline
+## Running the pipeline
 
-Desde la raíz del repo:
+From the repository root:
+
 ```bash
 jupyter lab
 ```
 
-Ejecutar los notebooks en orden (01->20):
+
+Run the notebooks in order (01->20):
 
 1. `01_...` overview / setup  
 2. `02_...` QC  
 3. `03_...` normalization + HVG  
 4. `04_...` Harmony embedding  
-5. `05_...` neighbors + UMAP + clustering L1  
+5. `05_...` neighbors + UMAP + L1 clustering  
 6. `06_...` Level1 annotation + split  
-7. `07_...` Level2 embedding/clustering por linaje  
-8. `08_...` markers + DE por linaje  
-9. `09_...` assembly global + plots/tablas  
-10. `10_...` limpieza final + Level1_refined + RBC-out  
-11. `11_...` Conv_T_other / Level2_final_map.json  
-12. `12_...` dotplot global final (Level2_final) + matriz numérica  
-13. `13_...` UMAP final (Harmony) por `patientID`  
+7. `07_...` Level2 embedding/clustering per lineage  
+8. `08_...` markers + DE per lineage  
+9. `09_...` global assembly + plots/tables  
+10. `10_...` final cleanup + Level1_refined + RBC-out  
+11. `11_...` Conv_T_other / `Level2_final_map.json`  
+12. `12_...` final global dotplot (Level2_final) + numeric matrix  
+13. `13_...` final UMAP (Harmony) by `patientID`  
 14. `14_...` QA coherence / HSCs  
-15. `15_...` composición + boxplots  
+15. `15_...` composition + boxplots  
 16. `16_...` scCODA Level1_refined  
 17. `17_...` scCODA Level2_final  
-18. `18_...` pseudobulk DE + volcanos  
-19. `19_...` cierre suplementaria DE  
-20. `20_...` ANNEX (UMAPs por linaje + dotplots Level2_final)
+18. `18_...` pseudobulk DE + volcano plots  
+19. `19_...` DE supplementary closure  
+20. `20_...` ANNEX (lineage UMAPs + Level2_final dotplots)
 
 ---
 
 ## Pathway enrichment
 
-El script está en `R/pathway_enrichment.R`:
+The script lives in `R/pathway_enrichment.R`:
 - Input: `results/summary_tables/DE_pseudobulk_{ct}_Healthy_vs_Cirrhosis.csv`
-- Output CSV: `results/summary_tables/GSEA_*` y `results/summary_tables/GSEA_MSigDB_summary_topPathways_Level1.csv`
-- Output figs: `figures/GSEA/`
+- Output CSV: `results/summary_tables/GSEA_*` and `results/summary_tables/GSEA_MSigDB_summary_topPathways_Level1.csv`
+- Output figures: `figures/GSEA/`
 
-Ejecutar desde la raíz del repo:
+Run from the repository root:
+
 ```bash
 Rscript R/pathway_enrichment.R
 ```
 
 ---
 
-## Outputs principales
+## Main outputs
 
-- Tablas resumen: `results/summary_tables/`
-- Figuras: `figures/`
-- Linajes: `results/lineages/` y `figures/level2/`
+- Summary tables: `results/summary_tables/`
+- Figures: `figures/`
+- Lineages: `results/lineages/` and `figures/level2/`
 - Annex: `figures/annex_lineage_umap_dotplots/`
-- Si existe: `final_deliverables/` para materiales “pegables” (tablas/PNGs/PDFs).
+- If present: `final_deliverables/` for export-ready materials (tables/PNGs/PDFs).
 
 ---
 
-## Reproducibilidad
+## Reproducibility
 
-- El pipeline escribe outputs en `results/` y `figures/`.
-- Para reproducir resultados, ejecuta los notebooks en orden (01→20) y usa los parámetros de `config/config.yaml`.
-- Los datos de entrada no se distribuyen en este repositorio; deben colocarse en `data/` según la configuración.
+- The pipeline writes outputs to `results/` and `figures/`.
+- To reproduce results, run notebooks in order (01->20) and use the parameters in `config/config.yaml`.
+- Input data are not distributed in this repository; they must be placed under `data/` according to the configuration.
 
 ---
 
-## Licencia
+## License
 
-Este repositorio se distribuye bajo la licencia MIT. Ver el archivo `LICENSE` para el texto completo.
-
-
-
+This repository is distributed under the MIT License. See `LICENSE` for the full text.
